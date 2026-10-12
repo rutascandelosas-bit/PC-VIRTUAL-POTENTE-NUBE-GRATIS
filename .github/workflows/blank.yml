@@ -1,45 +1,30 @@
-Virtual pc online
-name: PC VIRTUAL POTENTE NUBE GRATIS
+
+name: Windows Cloud
 
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  pc-virtual:
-    name: Iniciar entorno virtual Linux
-    runs-on: ubuntu-latest
-    timeout-minutes:  min(360, 360)
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 10
 
     steps:
-      - name: Preparar entorno
-        uses: actions/checkout@v4
-
-      - name: Mostrar recursos disponibles
+      - name: Comprobar Windows
+        shell: pwsh
         run: |
-          echo "PC VIRTUAL POTENTE NUBE GRATIS"
-          echo "Sistema operativo:"
-          lsb_release -a
-          echo "Procesador:"
-          nproc
-          echo "Memoria RAM:"
-          free -h
-          echo "Espacio disponible:"
-          df -h /
-
-      - name: Instalar herramientas básicas
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            git curl wget unzip zip \
-            python3 python3-pip \
-            build-essential
-
-      - name: Verificar instalación
-        run: |
-          git --version
-          python3 --version
-          curl --version
-          echo "Entorno preparado correctamente."
+          Write-Host "Windows en la nube funcionando"
+          Get-ComputerInfo |
+            Select-Object WindowsProductName,
+                          WindowsVersion
+          Write-Host "CPU:"
+          Get-CimInstance Win32_Processor |
+            Select-Object -ExpandProperty Name
+          Write-Host "RAM:"
+          Get-CimInstance Win32_OperatingSystem |
+            Select-Object TotalVisibleMemorySize
+          Write-Host "Prueba completada correctamente"
           
